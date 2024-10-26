@@ -6,11 +6,7 @@ export const getPurchases = async (req, res) => {
       include: {
         supplier: true,
         user: true,
-        purchaseDetails: {
-          include: {
-            product: true
-          }
-        }
+        purchaseDetails: true
       }
     })
 
@@ -21,15 +17,19 @@ export const getPurchases = async (req, res) => {
 }
 
 export const createPurchase = async (req, res) => {
+  const { supplierId, purchaseDetails } = req.body
+
   try {
-    const { supplierId, purchaseDate, purchaseDetails } = req.body
+    const totalAmount = purchaseDetails.reduce((total, detail) => {
+      return total + detail.price * detail.quantity
+    }, 0)
 
     const newPurchase = await prisma.purchase.create({
       data: {
         supplierId,
-        purchaseDate,
-        totalAmount: purchaseDetails.reduce((acc, item) => acc + item.price * item.quantity, 0),
-        userId: req.user.id,
+        userId: req.userId,
+        totalAmount,
+        purchaseDate: new Date(),
         purchaseDetails: {
           create: purchaseDetails.map(detail => ({
             productId: detail.productId,
@@ -37,12 +37,19 @@ export const createPurchase = async (req, res) => {
             price: detail.price
           }))
         }
-      },
-      include: {
-        purchaseDetails: true
       }
     })
-
+    // Actualizar stock de productos comprados
+    for (const detail of purchaseDetails) {
+      await prisma.product.update({
+        where: { id: detail.productId },
+        data: {
+          stock: {
+            increment: detail.quantity
+          }
+        }
+      })
+    }
     res.json(newPurchase)
   } catch (error) {
     res.status(500).json({ message: error.message })

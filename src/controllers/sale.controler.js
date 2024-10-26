@@ -21,14 +21,19 @@ export const getSales = async (req, res) => {
 }
 
 export const createSale = async (req, res) => {
+  const { customerId, saleDetails } = req.body
+
   try {
-    const { customerId, saleDate, saleDetails } = req.body
+    const totalAmount = saleDetails.reduce((total, detail) => {
+      return total + detail.price * detail.quantity
+    }, 0)
 
     const newSale = await prisma.sale.create({
       data: {
         customerId,
-        saleDate,
-        totalAmount: saleDetails.reduce((acc, item) => acc + item.price * item.quantity, 0),
+        userId: req.userId,
+        totalAmount,
+        saleDate: new Date(),
         saleDetails: {
           create: saleDetails.map(detail => ({
             productId: detail.productId,
@@ -36,11 +41,19 @@ export const createSale = async (req, res) => {
             price: detail.price
           }))
         }
-      },
-      include: {
-        saleDetails: true
       }
     })
+    // Actualizar stock de productos vendidos
+    for (const detail of saleDetails) {
+      await prisma.product.update({
+        where: { id: detail.productId },
+        data: {
+          stock: {
+            decrement: detail.quantity
+          }
+        }
+      })
+    }
 
     res.json(newSale)
   } catch (error) {

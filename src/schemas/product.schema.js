@@ -9,8 +9,5 @@ export const createProductSchema = z.object({
   }),
   price: z.number({
     required_error: 'Product price is required'
-  }),
-  stock: z.number({
-    required_error: 'Product stock is required'
   })
 })

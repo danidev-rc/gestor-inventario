@@ -15,9 +15,11 @@ export const getProducts = async (req, res) => {
 }
 
 export const createProduct = async (req, res) => {
+  const { name, description, price, stock = 0, categoryId } = req.body
+  if (stock < 0) {
+    return res.status(400).json({ message: 'Stock no puede ser negativo' })
+  }
   try {
-    const { name, description, price, stock, categoryId } = req.body
-
     const newProduct = await prisma.product.create({
       data: {
         name,
@@ -25,13 +27,12 @@ export const createProduct = async (req, res) => {
         price,
         stock,
         categoryId,
-        userId: req.user.id
+        userId: req.userId
       }
     })
-
     res.json(newProduct)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: 'Error al crear producto' })
   }
 }
 

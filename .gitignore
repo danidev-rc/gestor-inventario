@@ -10,3 +10,7 @@ package-lock.json
 .env
 .env.production
 .env.local
+
+# migration files
+migrations/
+dev.db

@@ -2,10 +2,14 @@ import { prisma } from '../config/db.js'
 
 export const getCategories = async (req, res) => {
   try {
-    const categories = await prisma.category.findMany()
+    const categories = await prisma.category.findMany({
+      include: {
+        user: true
+      }
+    })
     res.json(categories)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: 'Error al obtener categorias' })
   }
 }
 
@@ -15,10 +19,10 @@ export const createCategory = async (req, res) => {
 
     const newCategory = await prisma.category.create({
       data: {
-        name
+        name,
+        userId: req.userId
       }
     })
-
     res.json(newCategory)
   } catch (error) {
     res.status(500).json({ message: error.message })
