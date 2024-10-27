@@ -14,8 +14,8 @@ import {
 } from "react-icons/fi";
 
 const menuItems = [
-  { path: "/dashboard/products", name: "Products", icon: FiBox },
   { path: "/dashboard/categories", name: "Categories", icon: FiGrid },
+  { path: "/dashboard/products", name: "Products", icon: FiBox },
   { path: "/dashboard/sales", name: "Sales", icon: FiShoppingBag },
   { path: "/dashboard/purchases", name: "Purchases", icon: FiShoppingCart },
   { path: "/dashboard/customers", name: "Customers", icon: FiUsers },

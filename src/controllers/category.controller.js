@@ -3,6 +3,9 @@ import { prisma } from '../config/db.js'
 export const getCategories = async (req, res) => {
   try {
     const categories = await prisma.category.findMany({
+      where: {
+        userId: req.userId
+      },
       include: {
         user: true
       }
