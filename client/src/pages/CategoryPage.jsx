@@ -1,18 +1,23 @@
 import { useEffect } from "react";
 import { useCategories } from "../context/CategoryContext";
+import { FaSearch } from "react-icons/fa";
 
 export default function CategoryPage() {
   const { categories, getCategories } = useCategories();
 
   useEffect(() => {
     getCategories();
-  }, [getCategories]);
+  }, []);
 
   return (
     <div className='container mx-auto p-4'>
       <h1 className='text-2xl font-bold mb-4 text-center'>Category</h1>
-      <main className='text-center'>
-        <strong>Aqui ira un search bar</strong>
+      <main className='text-center flex justify-center gap-2 items-center mb-4'>
+        <span>
+          <strong>Search bar</strong>
+        </span>
+        <FaSearch />
+        <strong>Filtrado</strong>
       </main>
       <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
         {categories.map((category) => (

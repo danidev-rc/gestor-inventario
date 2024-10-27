@@ -12,6 +12,7 @@ import {
   FiUser,
   FiLogOut,
 } from "react-icons/fi";
+import { useAuth } from "../context/AuthContext"; // Importa el hook useAuth
 
 const menuItems = [
   { path: "/dashboard/categories", name: "Categories", icon: FiGrid },
@@ -25,6 +26,7 @@ const menuItems = [
 export default function Sidebar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
+  const { user, logout } = useAuth();
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
@@ -76,11 +78,16 @@ export default function Sidebar() {
 
         {/* User Profile and Logout Section */}
         <div className='p-5 border-t border-gray-700'>
-          <div className='flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 cursor-pointer'>
-            <FiUser size={20} />
-            <span>John Doe</span>
-          </div>
-          <div className='flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 cursor-pointer text-red-400'>
+          <Link to='/dashboard/profile'>
+            <div className='flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 cursor-pointer'>
+              <FiUser size={20} />
+              <span>{user.name}</span>
+            </div>
+          </Link>
+          <div
+            className='flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 cursor-pointer text-red-400'
+            onClick={logout} // Añade el manejador de eventos para logout
+          >
             <FiLogOut size={20} />
             <span>Logout</span>
           </div>
