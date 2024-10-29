@@ -13,13 +13,14 @@ import Layout from "./components/Layout";
 import HomePage from "./pages/HomePage";
 import { LoginPage } from "./pages/Auth/LoginPage";
 import { RegisterPage } from "./pages/Auth/RegisterPage";
+// Dashboard
 import ProfilePage from "./pages/Auth/ProfilePage";
-import Products from "./pages/ProductPage";
-import CategoryPage from "./pages/CategoryPage";
-import SalePage from "./pages/SalePage";
-import PurchasePage from "./pages/PurchasePage";
-import CustomerPage from "./pages/CustomerPage";
-import SupplierPage from "./pages/SupplierPage";
+import Products from "./pages/Dashboard/ProductPage";
+import CategoryPage from "./pages/Dashboard/CategoryPage";
+import SalePage from "./pages/Dashboard/SalePage";
+import PurchasePage from "./pages/Dashboard/PurchasePage";
+import CustomerPage from "./pages/Dashboard/CustomerPage";
+import SupplierPage from "./pages/Dashboard/SupplierPage";
 
 function App() {
   return (

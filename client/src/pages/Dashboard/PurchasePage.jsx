@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { usePurchases } from "../context/PurchaseContext";
+import { usePurchases } from "../../context/PurchaseContext";
 
 export default function PurchasePage() {
   const { purchases, getPurchases } = usePurchases();

@@ -32,7 +32,13 @@ Content-Type: application/json
   "name": "category1"
 }
 ###
+PUT {{BASE_URL}}/categories/2
+Content-Type: application/json
 
+{
+  "name": "Componentes"
+}
+###
 GET {{BASE_URL}}/products
 ###
 
@@ -46,6 +52,8 @@ Content-Type: application/json
   "stock": 50,
   "categoryId": 1
 }
+###
+GET {{BASE_URL}}/products/category/2
 ###
 GET {{BASE_URL}}/customers
 ###

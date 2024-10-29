@@ -26,6 +26,8 @@ model User { // Usuario
   categories  Category[] // categoria
   sales       Sale[]     // venta
   purchases   Purchase[] // compra
+  customers   Customer[] // cliente
+  suppliers   Supplier[] // proveedor
 }
 
 model Product { // Producto
@@ -114,8 +116,9 @@ model Customer { // Cliente
   lastName   String  // apellido
   email      String  // correo
   phone      String  // telefono
-  
+  userId     Int     // usuarioId
   // Relaciones
+  user       User    @relation(fields: [userId], references: [id]) // usuario
   sales      Sale[]  // venta
 }
 
@@ -125,7 +128,9 @@ model Supplier { // Proveedor
   email      String  // correo
   phone      String  // telefono
   address    String  // direccion
+  userId     Int     // usuarioId
   
   // Relaciones
+  user       User      @relation(fields: [userId], references: [id]) // usuario
   purchases  Purchase[] // compra
 }
