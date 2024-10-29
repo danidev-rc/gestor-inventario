@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import { useSales } from "../context/SaleContext";
+import { useSales } from "../../context/SaleContext";
+import { Table } from "../../components/Table";
 
 export default function SalePage() {
   const { sales, getSales } = useSales();

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useSuppliers } from "../context/SupplierContext";
+import { useSuppliers } from "../../context/SupplierContext";
 
 export default function SupplierPage() {
   const { suppliers, getSuppliers } = useSuppliers();
@@ -19,6 +19,7 @@ export default function SupplierPage() {
             <h1>{supplier.email}</h1>
             <h1>{supplier.phone}</h1>
             <h1>{supplier.address}</h1>
+            <h1>{supplier.userId}</h1>
           </div>
         ))}
       </div>

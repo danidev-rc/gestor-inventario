@@ -2,7 +2,11 @@ import { prisma } from '../config/db.js'
 
 export const getSuppliers = async (req, res) => {
   try {
-    const suppliers = await prisma.supplier.findMany()
+    const suppliers = await prisma.supplier.findMany({
+      where: {
+        userId: req.userId
+      }
+    })
     res.json(suppliers)
   } catch (error) {
     res.status(500).json({ message: error.message })
@@ -18,7 +22,8 @@ export const createSupplier = async (req, res) => {
         name,
         email,
         phone,
-        address
+        address,
+        userId: req.userId
       }
     })
 

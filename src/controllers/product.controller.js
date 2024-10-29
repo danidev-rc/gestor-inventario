@@ -74,3 +74,23 @@ export const deleteProduct = async (req, res) => {
     res.status(500).json({ message: error.message })
   }
 }
+
+// Obtener productos por categoría
+export const getProductsByCategory = async (req, res) => {
+  const { categoryId } = req.params
+  try {
+    const products = await prisma.product.findMany({
+      where: {
+        categoryId: parseInt(categoryId),
+        userId: req.userId
+      },
+      include: {
+        category: true,
+        user: true
+      }
+    })
+    res.json(products)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}

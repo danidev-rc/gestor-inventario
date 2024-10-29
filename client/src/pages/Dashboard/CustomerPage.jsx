@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useCustomers } from "../context/CustomerContext";
+import { useCustomers } from "../../context/CustomerContext";
 
 export default function CustomerPage() {
   const { customers, getCustomers } = useCustomers();
@@ -19,6 +19,7 @@ export default function CustomerPage() {
             <h1>{customer.lastName}</h1>
             <h1>{customer.email}</h1>
             <h1>{customer.phone}</h1>
+            <h1>{customer.userId}</h1>
           </div>
         ))}
       </div>

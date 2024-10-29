@@ -6,5 +6,5 @@ export const loginRequest = async (user) => axios.post("/auth/login", user)
 
 export const verifyTokenRequest = async () => axios.get("/auth/verify")
 
-export const profile = async () => axios.get("/auth/profile")
+export const profileRequest = async () => axios.get("/auth/profile")
 
