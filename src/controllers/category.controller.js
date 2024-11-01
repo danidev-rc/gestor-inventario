@@ -7,10 +7,19 @@ export const getCategories = async (req, res) => {
         userId: req.userId
       },
       include: {
-        user: true
+        _count: {
+          select: { products: true }
+        }
       }
     })
-    res.json(categories)
+
+    const categoriesWithProductsCount = categories.map((category) => ({
+      id: category.id,
+      name: category.name,
+      totalProducts: category._count.products
+    }))
+
+    res.json(categoriesWithProductsCount)
   } catch (error) {
     res.status(500).json({ message: 'Error al obtener categorias' })
   }

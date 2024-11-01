@@ -1,6 +1,9 @@
 import { useEffect } from "react";
 import { useSales } from "../../context/SaleContext";
-import { Table } from "../../components/Table";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 export default function SalePage() {
   const { sales, getSales } = useSales();
@@ -10,27 +13,27 @@ export default function SalePage() {
   }, []);
 
   return (
-    <div className='text-center py-6'>
-      <h1 className='text-3xl font-bold'>SALES</h1>
-      <div className='py-4'>
-        <table className='table-auto w-full'>
+    <div className='container mx-auto p-4'>
+      <h1 className='text-3xl font-bold mb-4 text-center'>VENTAS</h1>
+      <div className='overflow-x-auto'>
+        <table className='min-w-full bg-white border border-gray-200 rounded-xl'>
           <thead>
             <tr>
-              <th className='px-4 py-2'>Sale ID</th>
-              <th className='px-4 py-2'>Customer ID</th>
-              <th className='px-4 py-2'>Total Amount</th>
-              <th className='px-4 py-2'>Sale Date</th>
-              <th className='px-4 py-2'>User ID</th>
+              <th className='py-2 px-4 border-b'>#</th>
+              <th className='py-2 px-4 border-b'>Cliente ID</th>
+              <th className='py-2 px-4 border-b'>Monto Total</th>
+              <th className='py-2 px-4 border-b'>Fecha</th>
             </tr>
           </thead>
           <tbody>
             {sales.map((sale) => (
-              <tr key={sale.id}>
-                <td className='border px-4 py-2'>{sale.id}</td>
-                <td className='border px-4 py-2'>{sale.customerId}</td>
-                <td className='border px-4 py-2'>{sale.totalAmount}</td>
-                <td className='border px-4 py-2'>{sale.saleDate}</td>
-                <td className='border px-4 py-2'>{sale.userId}</td>
+              <tr key={sale.id} className='hover:bg-gray-100 text-center'>
+                <td className='py-2 px-4 border-b'>{sale.id}</td>
+                <td className='py-2 px-4 border-b'>{sale.customerId}</td>
+                <td className='py-2 px-4 border-b'>{sale.totalAmount}</td>
+                <td className='py-2 px-4 border-b'>
+                  {dayjs(sale.saleDate).utc().format("MMMM DD, YYYY")}
+                </td>
               </tr>
             ))}
           </tbody>
