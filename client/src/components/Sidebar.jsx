@@ -15,12 +15,12 @@ import {
 import { useAuth } from "../context/AuthContext"; // Importa el hook useAuth
 
 const menuItems = [
-  { path: "/dashboard/categories", name: "Categories", icon: FiGrid },
-  { path: "/dashboard/products", name: "Products", icon: FiBox },
-  { path: "/dashboard/sales", name: "Sales", icon: FiShoppingBag },
-  { path: "/dashboard/purchases", name: "Purchases", icon: FiShoppingCart },
-  { path: "/dashboard/customers", name: "Customers", icon: FiUsers },
-  { path: "/dashboard/suppliers", name: "Suppliers", icon: FiTruck },
+  { path: "/dashboard/categories", name: "Categorias", icon: FiGrid },
+  { path: "/dashboard/products", name: "Productos", icon: FiBox },
+  { path: "/dashboard/suppliers", name: "Proveedores", icon: FiTruck },
+  { path: "/dashboard/customers", name: "Clientes", icon: FiUsers },
+  { path: "/dashboard/purchases", name: "Compras", icon: FiShoppingCart },
+  { path: "/dashboard/sales", name: "Ventas", icon: FiShoppingBag },
 ];
 
 export default function Sidebar() {
