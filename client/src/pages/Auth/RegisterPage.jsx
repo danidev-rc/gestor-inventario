@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../context/AuthContext";
 
-export function RegisterPage() {
+export default function RegisterPage() {
   const {
     register,
     handleSubmit,

@@ -46,11 +46,11 @@ POST {{BASE_URL}}/products
 Content-Type: application/json
 
 {
-  "name": "Producto1",
-  "description": "Descripción del producto",
+  "name": "Iphone 16",
+  "description": "Descripción del Iphone 16",
   "price": 100,
   "stock": 50,
-  "categoryId": 1
+  "categoryId": 5
 }
 ###
 GET {{BASE_URL}}/products/category/2

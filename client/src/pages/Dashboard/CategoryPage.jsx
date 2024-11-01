@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useCategories } from "../../context/CategoryContext";
 import Modal from "../../components/Modal";
+import { Table } from "../../components/Table";
 
 export default function CategoryPage() {
   const {
@@ -60,30 +61,12 @@ export default function CategoryPage() {
       >
         Create Category
       </button>
-      <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
-        {categories.map((category) => (
-          <div key={category.id} className='bg-white shadow-md rounded-lg p-4'>
-            <h2 className='text-xl font-semibold mb-2 text-center'>
-              {category.name}
-            </h2>
-            <div className='flex justify-around'>
-              <button
-                className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'
-                onClick={() => handleEditClick(category)}
-              >
-                Edit
-              </button>
-              <button
-                className='bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600'
-                onClick={() => handleDeleteClick(category.id)}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-
+      <Table
+        headers={["id", "Name"]}
+        data={categories}
+        onEdit={handleEditClick}
+        onDelete={(item) => handleDeleteClick(item.id)}
+      />
       <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
         <h2 className='text-xl font-semibold mb-4'>
           {isEditMode ? "Edit Category" : "Create Category"}
