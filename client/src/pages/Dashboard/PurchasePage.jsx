@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import { usePurchases } from "../../context/PurchaseContext";
 import { useSuppliers } from "../../context/SupplierContext";
 import { useProducts } from "../../context/ProductContext";
@@ -12,11 +11,18 @@ import Modal from "../../components/Modal";
 dayjs.extend(utc);
 
 export default function PurchasePage() {
-  const { purchases, getPurchases, createPurchase } = usePurchases();
+  const {
+    purchases,
+    getPurchases,
+    createPurchase,
+    updatePurchase,
+    deletePurchase,
+  } = usePurchases();
   const { suppliers, getSuppliers } = useSuppliers();
   const { products, getProducts } = useProducts();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingPurchase, setEditingPurchase] = useState(null);
   const [supplierId, setSupplierId] = useState("");
   const [purchaseDate, setPurchaseDate] = useState("");
   const [purchaseDetails, setPurchaseDetails] = useState([
@@ -43,7 +49,30 @@ export default function PurchasePage() {
     setPurchaseDetails(updatedDetails);
   };
 
-  const handleCreatePurchase = async () => {
+  const handleOpenModal = (purchase = null) => {
+    if (purchase) {
+      // Set data for editing
+      setEditingPurchase(purchase);
+      setSupplierId(purchase.supplierId.toString());
+      setPurchaseDate(dayjs(purchase.purchaseDate).format("YYYY-MM-DD"));
+      setPurchaseDetails(
+        purchase.purchaseDetails.map((detail) => ({
+          productId: detail.productId.toString(),
+          quantity: detail.quantity.toString(),
+          price: detail.price.toString(),
+        }))
+      );
+    } else {
+      // Set data for new purchase
+      setEditingPurchase(null);
+      setSupplierId("");
+      setPurchaseDate("");
+      setPurchaseDetails([{ productId: "", quantity: "", price: "" }]);
+    }
+    setIsModalOpen(true);
+  };
+
+  const handleCreateOrUpdatePurchase = async () => {
     const formattedDate = dayjs(purchaseDate).toISOString();
     const purchase = {
       supplierId: parseInt(supplierId),
@@ -54,16 +83,29 @@ export default function PurchasePage() {
         price: parseFloat(detail.price),
       })),
     };
-    console.log("Datos de la compra a enviar:", purchase); // Verifica los datos aquí
+
     try {
-      await createPurchase(purchase);
+      if (editingPurchase) {
+        await updatePurchase(editingPurchase.id, purchase);
+      } else {
+        await createPurchase(purchase);
+      }
       setIsModalOpen(false);
       setSupplierId("");
       setPurchaseDate("");
       setPurchaseDetails([{ productId: "", quantity: "", price: "" }]);
-      getPurchases(); // Actualiza la lista de compras
+      getPurchases(); // Refresh purchases
     } catch (error) {
-      console.error("Error al crear la compra:", error.response.data);
+      console.error("Error al crear/editar la compra:", error.response.data);
+    }
+  };
+
+  const handleDeletePurchase = async (purchaseId) => {
+    try {
+      await deletePurchase(purchaseId);
+      getPurchases(); // Refresh purchases after deletion
+    } catch (error) {
+      console.error("Error al eliminar la compra:", error);
     }
   };
 
@@ -77,14 +119,16 @@ export default function PurchasePage() {
       <h1 className='text-2xl font-bold mb-4 text-center'>COMPRAS</h1>
       <div className='py-5'>
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => handleOpenModal()}
           className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
         >
           Crear Compra
         </button>
       </div>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <h2 className='text-xl font-bold mb-4'>Nueva Compra</h2>
+        <h2 className='text-xl font-bold mb-4'>
+          {editingPurchase ? "Editar Compra" : "Nueva Compra"}
+        </h2>
         <div className='mb-4'>
           <label className='block'>Proveedor:</label>
           <select
@@ -159,10 +203,10 @@ export default function PurchasePage() {
               Cancelar
             </button>
             <button
-              onClick={handleCreatePurchase}
+              onClick={handleCreateOrUpdatePurchase}
               className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
             >
-              Crear Compra
+              {editingPurchase ? "Actualizar Compra" : "Crear Compra"}
             </button>
           </div>
         </div>
@@ -190,10 +234,16 @@ export default function PurchasePage() {
                   {dayjs(purchase.purchaseDate).utc().format("MMMM DD, YYYY")}
                 </td>
                 <td className='py-2 px-4 border-b'>
-                  <button className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mr-2'>
+                  <button
+                    className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mr-2'
+                    onClick={() => handleOpenModal(purchase)}
+                  >
                     <FaEdit />
                   </button>
-                  <button className='bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 mr-2'>
+                  <button
+                    className='bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 mr-2'
+                    onClick={() => handleDeletePurchase(purchase.id)}
+                  >
                     <FaTrash />
                   </button>
                 </td>

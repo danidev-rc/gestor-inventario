@@ -24,7 +24,7 @@ export const getSales = async (req, res) => {
 }
 
 export const createSale = async (req, res) => {
-  const { customerId, saleDetails } = req.body
+  const { customerId, saleDate, saleDetails } = req.body
 
   try {
     const totalAmount = saleDetails.reduce((total, detail) => {
@@ -36,7 +36,7 @@ export const createSale = async (req, res) => {
         customerId,
         userId: req.userId,
         totalAmount,
-        saleDate: new Date(),
+        saleDate: new Date(saleDate),
         saleDetails: {
           create: saleDetails.map(detail => ({
             productId: detail.productId,
@@ -65,25 +65,47 @@ export const createSale = async (req, res) => {
 }
 
 export const updateSale = async (req, res) => {
-  try {
-    const { id } = req.params
+  const { id } = req.params
+  const { customerId, saleDate, saleDetails } = req.body
 
-    const sale = await prisma.sale.findUnique({
+  try {
+    const totalAmount = saleDetails.reduce((total, detail) => {
+      return total + detail.price * detail.quantity
+    }, 0)
+
+    await prisma.saleDetail.deleteMany({
+      where: { saleId: parseInt(id) }
+    })
+
+    await prisma.sale.update({
       where: { id: parseInt(id) },
-      include: {
-        customer: true,
-        user: true,
+      data: {
+        customerId,
+        totalAmount,
+        saleDate: new Date(saleDate),
         saleDetails: {
-          include: {
-            product: true
-          }
+          create: saleDetails.map(detail => ({
+            productId: detail.productId,
+            quantity: detail.quantity,
+            price: detail.price
+          })
+          )
         }
       }
     })
 
-    if (!sale) return res.status(404).json({ message: 'Venta no encontrada' })
-
-    res.json(sale)
+    // Actualizar stock de productos vendidos
+    for (const detail of saleDetails) {
+      await prisma.product.update({
+        where: { id: detail.productId },
+        data: {
+          stock: {
+            decrement: detail.quantity
+          }
+        }
+      })
+    }
+    res.json({ message: 'Venta actualizada correctamente' })
   } catch (error) {
     res.status(500).json({ message: error.message })
   }
@@ -93,8 +115,12 @@ export const deleteSale = async (req, res) => {
   try {
     const { id } = req.params
 
+    await prisma.saleDetail.deleteMany({
+      where: { saleId: parseInt(id) }
+    })
+
     await prisma.sale.delete({
-      where: {id: parseInt(id)}
+      where: { id: parseInt(id) }
     })
 
     res.json({ message: 'Venta eliminada correctamente' })

@@ -106,7 +106,21 @@ Content-Type: application/json
     }
   ]
 }
+###
+PUT {{BASE_URL}}/sales/1
+Content-Type: application/json
 
+{
+  "customerId": 1,
+  "saleDate": "2024-10-25T00:00:00Z",
+  "saleDetails": [
+    {
+      "productId": 1,
+      "quantity": 2,
+      "price": 100
+    }
+  ]
+}
 ###
 GET {{BASE_URL}}/purchases
 ###

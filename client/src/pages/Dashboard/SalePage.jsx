@@ -12,11 +12,13 @@ import Modal from "../../components/Modal";
 dayjs.extend(utc);
 
 export default function SalePage() {
-  const { sales, getSales, createSale } = useSales();
+  const { sales, getSales, createSale, updateSale, deleteSale } = useSales();
   const { customers, getCustomers } = useCustomers();
   const { products, getProducts } = useProducts();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [selectedSale, setSelectedSale] = useState(null);
   const [customerId, setCustomerId] = useState("");
   const [saleDate, setSaleDate] = useState("");
   const [saleDetails, setSaleDetails] = useState([
@@ -45,7 +47,7 @@ export default function SalePage() {
 
   const handleCreateSale = async () => {
     const formattedDate = dayjs(saleDate).toISOString();
-    const purchase = {
+    const sale = {
       customerId: parseInt(customerId),
       saleDate: formattedDate,
       saleDetails: saleDetails.map((detail) => ({
@@ -54,17 +56,70 @@ export default function SalePage() {
         price: parseFloat(detail.price),
       })),
     };
-    console.log("Datos de la venta a enviar:", purchase); // Verifica los datos aquí
     try {
-      await createSale(purchase);
+      await createSale(sale);
       setIsModalOpen(false);
-      setCustomerId("");
-      setSaleDate("");
-      setSaleDetails([{ productId: "", quantity: "", price: "" }]);
+      resetForm();
       getSales();
     } catch (error) {
       console.error("Error al crear la venta:", error.response.data);
     }
+  };
+
+  const handleUpdateSale = async () => {
+    const formattedDate = dayjs(saleDate).toISOString();
+    const updatedSale = {
+      customerId: parseInt(customerId),
+      saleDate: formattedDate,
+      saleDetails: saleDetails.map((detail) => ({
+        productId: parseInt(detail.productId),
+        quantity: parseInt(detail.quantity),
+        price: parseFloat(detail.price),
+      })),
+    };
+    try {
+      await updateSale(selectedSale.id, updatedSale);
+      setIsModalOpen(false);
+      resetForm();
+      getSales();
+    } catch (error) {
+      console.error("Error al actualizar la venta:", error);
+      alert(
+        "Hubo un error al actualizar la venta. Por favor, inténtalo de nuevo."
+      );
+    }
+  };
+
+  const handleDeleteSale = async (id) => {
+    try {
+      await deleteSale(id);
+      getSales();
+    } catch (error) {
+      console.error("Error al eliminar la venta:", error.response.data);
+    }
+  };
+
+  const handleEditClick = (sale) => {
+    setSelectedSale(sale);
+    setCustomerId(sale.customerId);
+    setSaleDate(dayjs(sale.saleDate).format("YYYY-MM-DD"));
+    setSaleDetails(sale.saleDetails);
+    setIsEditMode(true);
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteClick = (id) => {
+    if (window.confirm("¿Estás seguro de que deseas eliminar esta venta?")) {
+      handleDeleteSale(id);
+    }
+  };
+
+  const resetForm = () => {
+    setCustomerId("");
+    setSaleDate("");
+    setSaleDetails([{ productId: "", quantity: "", price: "" }]);
+    setSelectedSale(null);
+    setIsEditMode(false);
   };
 
   const getCustomerName = (id) => {
@@ -77,14 +132,19 @@ export default function SalePage() {
       <h1 className='text-3xl font-bold mb-4 text-center'>VENTAS</h1>
       <div className='py-5'>
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            resetForm();
+            setIsModalOpen(true);
+          }}
           className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
         >
           Crear Venta
         </button>
       </div>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <h2 className='text-xl font-bold mb-4'>Nueva Venta</h2>
+        <h2 className='text-xl font-bold mb-4'>
+          {isEditMode ? "Editar Venta" : "Nueva Venta"}
+        </h2>
         <div className='mb-4'>
           <label className='block'>Cliente:</label>
           <select
@@ -159,10 +219,10 @@ export default function SalePage() {
               Cancelar
             </button>
             <button
-              onClick={handleCreateSale}
+              onClick={isEditMode ? handleUpdateSale : handleCreateSale}
               className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
             >
-              Crear Venta
+              {isEditMode ? "Actualizar Venta" : "Crear Venta"}
             </button>
           </div>
         </div>
@@ -172,7 +232,7 @@ export default function SalePage() {
           <thead>
             <tr>
               <th className='py-2 px-4 border-b'>#</th>
-              <th className='py-2 px-4 border-b'>Cliente ID</th>
+              <th className='py-2 px-4 border-b'>Cliente</th>
               <th className='py-2 px-4 border-b'>Monto Total</th>
               <th className='py-2 px-4 border-b'>Fecha</th>
               <th className='py-2 px-4 border-b'>Acciones</th>
@@ -190,10 +250,16 @@ export default function SalePage() {
                   {dayjs(sale.saleDate).utc().format("MMMM DD, YYYY")}
                 </td>
                 <td className='py-2 px-4 border-b'>
-                  <button className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mr-2'>
+                  <button
+                    className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mr-2'
+                    onClick={() => handleEditClick(sale)}
+                  >
                     <FaEdit />
                   </button>
-                  <button className='bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 mr-2'>
+                  <button
+                    className='bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 mr-2'
+                    onClick={() => handleDeleteClick(sale.id)}
+                  >
                     <FaTrash />
                   </button>
                 </td>

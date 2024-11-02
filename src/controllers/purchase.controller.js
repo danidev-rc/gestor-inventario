@@ -85,6 +85,56 @@ export const getPurchaseById = async (req, res) => {
   }
 }
 
+export const updatePurchase = async (req, res) => {
+  const { id } = req.params
+  const { supplierId, purchaseDate, purchaseDetails } = req.body
+
+  try {
+    const totalAmount = purchaseDetails.reduce((total, detail) => {
+      return total + detail.price * detail.quantity
+    }, 0)
+
+    // Eliminar los detalles de compra relacionados
+    await prisma.purchaseDetail.deleteMany({
+      where: { purchaseId: parseInt(id) }
+    })
+
+    // Actualizar la compra
+    await prisma.purchase.update({
+      where: { id: parseInt(id) },
+      data: {
+        supplierId,
+        totalAmount,
+        purchaseDate: new Date(purchaseDate),
+        purchaseDetails: {
+          create: purchaseDetails.map(detail => ({
+            productId: detail.productId,
+            quantity: detail.quantity,
+            price: detail.price
+          })
+          )
+        }
+      }
+    })
+
+    // Actualizar stock de productos comprados
+    for (const detail of purchaseDetails) {
+      await prisma.product.update({
+        where: { id: detail.productId },
+        data: {
+          stock: {
+            increment: detail.quantity
+          }
+        }
+      })
+    }
+
+    res.json({ message: 'Compra actualizada correctamente' })
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
 export const deletePurchase = async (req, res) => {
   try {
     const { id } = req.params
