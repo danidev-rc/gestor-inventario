@@ -89,13 +89,18 @@ export const deletePurchase = async (req, res) => {
   try {
     const { id } = req.params
 
+    // Eliminar los detalles de compra relacionados
+    await prisma.purchaseDetail.deleteMany({
+      where: { purchaseId: parseInt(id) }
+    })
+
+    // Eliminar la compra
     await prisma.purchase.delete({
       where: { id: parseInt(id) }
     })
 
-    res.json({ message: 'Compra eliminada exitosamente' })
+    res.json({ message: 'Compra eliminada correctamente' })
   } catch (error) {
-    console.error('Error al eliminar la compra:', error)
-    res.status(500).json({ message: 'Error al eliminar la compra' })
+    res.status(500).json({ message: error.message })
   }
 }

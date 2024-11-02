@@ -125,7 +125,10 @@ Content-Type: application/json
   ]
 }
 ###
-GET {{BASE_URL}}/purchase-details
+DELETE {{BASE_URL}}/purchases/10
+
+###
+GET {{BASE_URL}}/purchase-details/
 ###
 GET {{BASE_URL}}/sale-details
 

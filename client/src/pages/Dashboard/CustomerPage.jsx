@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useCustomers } from "../../context/CustomerContext";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import Modal from "../../components/Modal";
 
 export default function CustomerPage() {
@@ -85,13 +86,13 @@ export default function CustomerPage() {
                     className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mr-2'
                     onClick={() => handleEditClick(customer)}
                   >
-                    Editar
+                    <FaEdit />
                   </button>
                   <button
                     className='bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600'
                     onClick={() => handleDeleteClick(customer.id)}
                   >
-                    Eliminar
+                    <FaTrash />
                   </button>
                 </td>
               </tr>
