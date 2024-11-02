@@ -86,10 +86,10 @@ export default function CategoryPage() {
     <div className='container mx-auto p-4'>
       <h1 className='text-2xl font-bold mb-4 text-center'>CATEGORIAS</h1>
       <button
-        className='bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mb-4'
+        className='bg-sky-500 text-white px-4 py-2 rounded hover:bg-sky-600 mb-4'
         onClick={handleCreateClick}
       >
-        Create Category
+        Crear Categoría
       </button>
       <div className='overflow-x-auto'>
         <table className='min-w-full bg-white border rounded-xl'>
@@ -124,7 +124,7 @@ export default function CategoryPage() {
                 </td>
                 <td className='py-2 px-4 border-b'>
                   <button
-                    className='bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600'
+                    className='bg-green-700 text-white px-4 py-2 rounded hover:bg-green-600'
                     onClick={() => handleAddProductClick(category)}
                   >
                     <AiFillProduct />
@@ -164,16 +164,25 @@ export default function CategoryPage() {
             >
               {isEditMode ? "Save" : "Create"}
             </button>
+            <button
+              type='button'
+              onClick={handleCloseModal}
+              className='bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 ml-2'
+            >
+              Cancel
+            </button>
           </div>
         </form>
       </Modal>
 
       <Modal isOpen={isProductModalOpen} onClose={handleCloseProductModal}>
-        <h2 className='text-xl font-semibold mb-4'>Add Product</h2>
+        <h2 className='text-xl font-semibold mb-4 text-center'>
+          Añadir Producto
+        </h2>
         <form onSubmit={handleProductFormSubmit}>
           <div className='mb-4'>
             <label className='block text-gray-700 text-sm font-bold mb-2'>
-              Name
+              Nombre
             </label>
             <input
               type='text'
@@ -189,7 +198,7 @@ export default function CategoryPage() {
           </div>
           <div className='mb-4'>
             <label className='block text-gray-700 text-sm font-bold mb-2'>
-              Description
+              Descripción
             </label>
             <input
               type='text'
@@ -205,7 +214,7 @@ export default function CategoryPage() {
           </div>
           <div className='mb-4'>
             <label className='block text-gray-700 text-sm font-bold mb-2'>
-              Price
+              Precio
             </label>
             <input
               type='number'
@@ -235,12 +244,19 @@ export default function CategoryPage() {
               }
             />
           </div>
-          <div className='flex justify-end'>
+          <div className='flex justify-around'>
             <button
               type='submit'
               className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'
             >
               Add Product
+            </button>
+            <button
+              type='button'
+              onClick={handleCloseProductModal}
+              className='bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 ml-2'
+            >
+              Cancel
             </button>
           </div>
         </form>

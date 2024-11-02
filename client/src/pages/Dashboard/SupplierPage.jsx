@@ -56,10 +56,10 @@ export default function SupplierPage() {
     <div className='container mx-auto p-4'>
       <h1 className='text-2xl font-bold mb-4 text-center'>PROVEEDORES</h1>
       <button
-        className='bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mb-4'
+        className='bg-sky-500 text-white px-4 py-2 rounded hover:bg-sky-600 mb-4'
         onClick={handleCreateClick}
       >
-        Create Supplier
+        Crear Proveedor
       </button>
       <div className='overflow-x-auto'>
         <table className='min-w-full bg-white border rounded-xl'>

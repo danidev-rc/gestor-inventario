@@ -32,7 +32,6 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Mobile menu button */}
       <button
         className='lg:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-gray-800 text-white'
         onClick={toggleSidebar}
@@ -40,17 +39,12 @@ export default function Sidebar() {
         {isSidebarOpen ? <FiX size={24} /> : <FiMenu size={24} />}
       </button>
 
-      {/* Sidebar */}
       <div
-        className={`
-        fixed top-0 left-0 h-full bg-gray-800 text-white w-64 transform transition-transform duration-300 ease-in-out flex flex-col
-        ${
+        className={`fixed top-0 left-0 h-full bg-gray-800 text-white w-64 transform transition-transform duration-300 ease-in-out flex flex-col ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-        }
-        lg:relative lg:translate-x-0
-      `}
+        } lg:relative lg:translate-x-0`}
       >
-        <div className='flex-1 p-5'>
+        <div className='flex-1 p-5 pt-16 lg:pt-5'>
           <h1 className='text-2xl font-bold mb-8'>Dashboard</h1>
           <nav>
             {menuItems.map((item) => {
@@ -59,14 +53,11 @@ export default function Sidebar() {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`
-                    flex items-center gap-3 p-3 rounded-lg mb-2 transition-colors
-                    ${
-                      location.pathname === item.path
-                        ? "bg-blue-600 text-white"
-                        : "hover:bg-gray-700"
-                    }
-                  `}
+                  className={`flex items-center gap-3 p-3 rounded-lg mb-2 transition-colors ${
+                    location.pathname === item.path
+                      ? "bg-blue-600 text-white"
+                      : "hover:bg-gray-700"
+                  }`}
                 >
                   <Icon size={20} />
                   <span>{item.name}</span>

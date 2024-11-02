@@ -20,7 +20,7 @@ export const getPurchases = async (req, res) => {
 }
 
 export const createPurchase = async (req, res) => {
-  const { supplierId, purchaseDetails } = req.body
+  const { supplierId, purchaseDate, purchaseDetails } = req.body
 
   try {
     const totalAmount = purchaseDetails.reduce((total, detail) => {
@@ -32,7 +32,7 @@ export const createPurchase = async (req, res) => {
         supplierId,
         userId: req.userId,
         totalAmount,
-        purchaseDate: new Date(),
+        purchaseDate: new Date(purchaseDate),
         purchaseDetails: {
           create: purchaseDetails.map(detail => ({
             productId: detail.productId,
@@ -55,6 +55,7 @@ export const createPurchase = async (req, res) => {
     }
     res.json(newPurchase)
   } catch (error) {
+    console.log('Error al crear compra', error)
     res.status(500).json({ message: error.message })
   }
 }
@@ -91,7 +92,10 @@ export const deletePurchase = async (req, res) => {
     await prisma.purchase.delete({
       where: { id: parseInt(id) }
     })
+
+    res.json({ message: 'Compra eliminada exitosamente' })
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    console.error('Error al eliminar la compra:', error)
+    res.status(500).json({ message: 'Error al eliminar la compra' })
   }
 }
