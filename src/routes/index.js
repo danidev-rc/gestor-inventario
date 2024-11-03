@@ -8,6 +8,7 @@ import saleRoutes from './sale.routes.js'
 import saleDetailRoutes from './saleDetail.routes.js'
 import purchaseDetailRoutes from './purchaseDetail.routes.js'
 import supplierRoutes from './supplier.routes.js'
+import statsRoutes from './stats.routes.js'
 
 const routes = Router()
 
@@ -20,5 +21,6 @@ routes.use('/sales', saleRoutes)
 routes.use('/sale-details', saleDetailRoutes)
 routes.use('/purchase-details', purchaseDetailRoutes)
 routes.use('/suppliers', supplierRoutes)
+routes.use('/stats', statsRoutes)
 
 export default routes
