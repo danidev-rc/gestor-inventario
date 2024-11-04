@@ -39,15 +39,15 @@ export default function ProfilePage() {
   }, []);
 
   return (
-    <div className='min-h-screen bg-gray-100 py-2 px-2'>
-      <div className='max-w-7xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden'>
-        <div className='h-52 bg-gradient-to-r from-blue-500 to-indigo-600'></div>
+    <div className='min-h-screen  py-2 px-2'>
+      <div className='max-w-8xl mx-auto'>
+        <div className='h-52 bg-gradient-to-r from-blue-500 to-indigo-600 border rounded-xl'></div>
         <div className='px-6 py-4'>
           <div className='flex flex-col items-center -mt-16'>
             <img
               src='https://api.dicebear.com/7.x/avataaars/svg?seed=John'
               alt='Profile'
-              className='w-32 h-32 rounded-full border-4 border-white bg-white'
+              className='w-52 h-52 rounded-full border-4 border-white bg-white'
             />
             <h2 className='mt-4 text-2xl font-bold text-gray-900'>
               {user.name}

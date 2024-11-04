@@ -17,7 +17,7 @@ export default function Card({ name, icon: Icon, count }) {
           {props.number.to((n) => n.toFixed(0))}
         </animated.div>
       </div>
-      <div className='text-gray-600'>{name}</div>
+      <div className='text-gray-600 font-bold text-xl'>{name}</div>
     </div>
   );
 }
