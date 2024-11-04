@@ -24,9 +24,22 @@ export const getSales = async (req, res) => {
 }
 
 export const createSale = async (req, res) => {
-  const { customerId, saleDate, saleDetails } = req.body
-
   try {
+    const { customerId, saleDate, saleDetails } = req.body
+
+    const saleDetailsWithPrices = await Promise.all(
+      saleDetails.map(async (detail) => {
+        const product = await prisma.product.findUnique({
+          where: {id: detail.productId}
+        })
+        return {
+          productId: detail.productId,
+          quantity: detail.quantity,
+          price: product.price // Obtener precio del producto
+        }
+      })
+    )
+
     const totalAmount = saleDetails.reduce((total, detail) => {
       return total + detail.price * detail.quantity
     }, 0)
@@ -38,14 +51,11 @@ export const createSale = async (req, res) => {
         totalAmount,
         saleDate: new Date(saleDate),
         saleDetails: {
-          create: saleDetails.map(detail => ({
-            productId: detail.productId,
-            quantity: detail.quantity,
-            price: detail.price
-          }))
+          create: saleDetailsWithPrices
         }
       }
     })
+
     // Actualizar stock de productos vendidos
     for (const detail of saleDetails) {
       await prisma.product.update({
