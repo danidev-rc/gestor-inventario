@@ -28,10 +28,9 @@ export const register = async (req, res) => {
     const token = await createAccessToken({ id: newUser.id })
 
     res.cookie('token', token, {
-      maxAge: 1000 * 60 * 60,
-      httpOnly: true,
-      secure: true,
-      sameSite: 'lax'
+      // httpOnly: process.env.NODE_ENV === 'development', // descomesntar en producción
+      // secure: false, // true in production
+      // sameSite: 'none' // descomesntar en producción
     })
 
     res.json({
@@ -64,10 +63,9 @@ export const login = async (req, res) => {
     const token = await createAccessToken({ id: user.id })
 
     res.cookie('token', token, {
-      maxAge: 1000 * 60 * 60,
-      httpOnly: true,
-      secure: true,
-      sameSite: 'lax'
+      // httpOnly: process.env.NODE_ENV === 'development',// descomesntar en producción
+      // secure: false, // true en producción
+      // sameSite: 'none' // descomesntar en producción
     })
 
     res.json({
